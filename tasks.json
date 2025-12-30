@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "title": "Task 1",
+        "description": "",
+        "status": "pending"
+    },
+    {
+        "id": 2,
+        "title": "Manual Test Task",
+        "description": "This is a manual test task",
+        "status": "pending"
+    }
+]
