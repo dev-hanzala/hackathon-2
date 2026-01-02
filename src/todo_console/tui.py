@@ -36,9 +36,24 @@ class TodoApp(App):
         task_list_view = self.query_one("#task_list", ListView)
         task_list_view.clear()
         tasks = get_all_tasks()
+
+        def truncate_text(text, max_length):
+            if len(text) > max_length:
+                return text[:max_length-3] + "..."
+            return text
+
         if tasks:
             for task in tasks:
-                task_list_view.append(ListItem(Static(f"{task.id}. {task.title} [{task.status}]", classes="task-item")))
+                checkbox = "[x]" if task.status == "completed" else "[ ]"
+                truncated_title = truncate_text(task.title, 30)
+                truncated_description = truncate_text(task.description, 30) if task.description else ""
+
+                if truncated_description:
+                    display_text = f"{task.id}. {truncated_title} ({truncated_description}) {checkbox}"
+                else:
+                    display_text = f"{task.id}. {truncated_title} {checkbox}"
+
+                task_list_view.append(ListItem(Static(display_text, classes="task-item")))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
 
