@@ -52,7 +52,7 @@ class TodoApp(App):
         task_list_view = self.query_one("#task_list", ListView)
         if task_list_view.highlighted_child:
             task_item_static = task_list_view.highlighted_child.query_one(".task-item", Static)
-            task_id_str = task_item_static.text.split(",")[0].split(": ")[1]
+            task_id_str = str(task_item_static._renderable).split(",")[0].split(": ")[1]
             return int(task_id_str)
         return None
 
