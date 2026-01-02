@@ -42,9 +42,13 @@ class TodoApp(App):
                 return text[:max_length-3] + "..."
             return text
 
-        # Define a consistent width for the content before the checkbox for alignment
-        # This is an estimate and might need adjustment based on typical terminal width
-        MAX_CONTENT_WIDTH = 70 # Example width for "ID. Title (Description)" part
+        # Target total line width (e.g., 80 columns)
+        TOTAL_LINE_WIDTH = 80
+        # Length of the checkbox string including the leading space, e.g., " [x]" is 4 chars
+        CHECKBOX_DISPLAY_LENGTH = 4
+
+        # Maximum available width for the task details (ID. Title (Description))
+        MAX_TASK_DETAILS_WIDTH = TOTAL_LINE_WIDTH - CHECKBOX_DISPLAY_LENGTH
 
         if tasks:
             for task in tasks:
@@ -52,16 +56,23 @@ class TodoApp(App):
                 truncated_title = truncate_text(task.title, 30)
                 truncated_description = truncate_text(task.description, 30) if task.description else ""
 
-                base_text = f"{task.id}. {truncated_title}"
+                # Construct the main part of the text (ID. Title (Description))
+                task_details = f"{task.id}. {truncated_title}"
                 if truncated_description:
-                    base_text += f" ({truncated_description})"
+                    task_details += f" ({truncated_description})"
 
-                # Calculate padding to align the '|' and checkbox
-                padding_length = MAX_CONTENT_WIDTH - len(base_text)
-                if padding_length < 1: # Ensure at least one space if content is too long
+                # Ensure task_details does not exceed its allocated width
+                if len(task_details) > MAX_TASK_DETAILS_WIDTH:
+                    task_details = truncate_text(task_details, MAX_TASK_DETAILS_WIDTH)
+
+                # Calculate padding to push the checkbox to the far right
+                padding_length = TOTAL_LINE_WIDTH - len(task_details) - len(checkbox)
+
+                # Ensure minimum one space padding
+                if padding_length < 1:
                     padding_length = 1
 
-                display_text = f"{base_text}{' ' * padding_length}| {checkbox}"
+                display_text = f"{task_details}{' ' * padding_length}{checkbox}"
                 task_list_view.append(ListItem(Static(display_text, classes="task-item")))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
