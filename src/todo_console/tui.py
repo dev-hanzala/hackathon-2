@@ -1,5 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Label, ListView, ListItem, Static, Input, Button
+from textual.css.query import NoMatches
 from textual.containers import Container, Horizontal
 from todo_console.models import get_all_tasks, add_task, mark_task_complete, update_task, delete_task, TODOS, next_id
 
@@ -51,9 +52,12 @@ class TodoApp(App):
     def get_selected_task_id(self) -> int | None:
         task_list_view = self.query_one("#task_list", ListView)
         if task_list_view.highlighted_child:
-            task_item_static = task_list_view.highlighted_child.query_one(".task-item", Static)
-            task_id_str = str(task_item_static.render()).split(".")[0]
-            return int(task_id_str)
+            try:
+                task_item_static = task_list_view.highlighted_child.query_one(".task-item", Static)
+                task_id_str = str(task_item_static.render()).split(".")[0]
+                return int(task_id_str)
+            except NoMatches:
+                return None
         return None
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
