@@ -2,7 +2,7 @@
 
 This is a simple Command Line Interface (CLI) Todo application built with Python 3.13+.
 It allows users to manage their tasks by adding, listing, completing, updating, and deleting them.
-Tasks are stored in a `tasks.json` file, providing persistence across runs.
+Tasks are stored in-memory within the application's runtime.
 
 ## Features
 
