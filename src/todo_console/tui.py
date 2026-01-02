@@ -35,7 +35,6 @@ class TodoApp(App):
         task_list_view = self.query_one("#task_list", ListView)
         task_list_view.clear()
         tasks = get_all_tasks()
-
         def truncate_text(text, max_length):
             if len(text) > max_length:
                 return text[:max_length-3] + "..."
@@ -43,15 +42,15 @@ class TodoApp(App):
 
         # Target total line width (e.g., 80 columns)
         TOTAL_LINE_WIDTH = 80
-        # Length of the checkbox string including the leading space, e.g., " [x]" is 4 chars
-        CHECKBOX_DISPLAY_LENGTH = 4
-
-        # Maximum available width for the task details (ID. Title (Description))
-        MAX_TASK_DETAILS_WIDTH = TOTAL_LINE_WIDTH - CHECKBOX_DISPLAY_LENGTH
 
         if tasks:
             for task in tasks:
-                checkbox = "[x]" if task.status == "completed" else "[ ]"
+                checkbox_char = "*" if task.status == "completed" else ""
+                checkbox_display_length = 1 if task.status == "completed" else 0
+
+                # Maximum available width for the task details (ID. Title (Description))
+                MAX_TASK_DETAILS_WIDTH = TOTAL_LINE_WIDTH - checkbox_display_length
+
                 truncated_title = truncate_text(task.title, 30)
                 truncated_description = truncate_text(task.description, 30) if task.description else ""
 
@@ -65,16 +64,17 @@ class TodoApp(App):
                     task_details = truncate_text(task_details, MAX_TASK_DETAILS_WIDTH)
 
                 # Calculate padding to push the checkbox to the far right
-                padding_length = TOTAL_LINE_WIDTH - len(task_details) - len(checkbox)
+                padding_length = TOTAL_LINE_WIDTH - len(task_details) - checkbox_display_length
 
                 # Ensure minimum one space padding
                 if padding_length < 1:
                     padding_length = 1
 
-                display_text = f"{task_details}{' ' * padding_length}{checkbox}"
+                display_text = f"{task_details}{' ' * padding_length}{checkbox_char}"
                 task_list_view.append(ListItem(Static(display_text, classes="task-item")))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
+
 
     def show_message(self, message: str, is_error: bool = False) -> None:
         status_label = self.query_one("#status_message", Label)
