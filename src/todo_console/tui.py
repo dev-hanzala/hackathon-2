@@ -4,18 +4,7 @@ from textual.containers import Container, Horizontal
 from todo_console.models import get_all_tasks, add_task, mark_task_complete, update_task, delete_task, TODOS, next_id
 
 class TodoApp(App):
-    CSS = """
-    Screen:dark {
-        background: #202020;
-        color: #f0f0f0;
-    }
-    Screen {
-        background: #f0f0f0; /* Default light mode background */
-        color: #202020;    /* Default light mode text */
-    }
-    """
     BINDINGS = [
-        ("d", "toggle_dark", "Toggle dark mode"),
         ("q", "quit", "Quit"),
     ]
 
@@ -125,8 +114,6 @@ class TodoApp(App):
             else:
                 self.show_message("Error: No task selected to delete.", is_error=True)
 
-    def action_toggle_dark(self) -> None:
-        self.dark = not self.dark
 
     def action_quit(self) -> None:
         self.exit()
