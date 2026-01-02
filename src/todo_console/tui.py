@@ -5,7 +5,7 @@ from todo_console.models import get_all_tasks, add_task, mark_task_complete, upd
 
 class TodoApp(App):
     CSS = """
-    ..-dark-mode {
+    Screen:dark {
         background: #202020;
         color: #f0f0f0;
     }
