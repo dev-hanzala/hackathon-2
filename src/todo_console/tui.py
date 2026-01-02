@@ -1,7 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Label, ListView, ListItem, Static, Input, Button
 from textual.containers import Container, Horizontal
-from todo_console.models import get_all_tasks, add_task, mark_task_complete, update_task, delete_task
+from todo_console.models import get_all_tasks, add_task, mark_task_complete, update_task, delete_task, TODOS, next_id
 
 class TodoApp(App):
     BINDINGS = [
@@ -24,6 +24,11 @@ class TodoApp(App):
             )
             yield Label("", id="status_message", classes="hidden")
             yield ListView(id="task_list")
+
+    def on_mount(self) -> None:
+        self.dark = False  # Initialize dark mode to off (light mode)
+        TODOS.clear() # Clear tasks for a fresh session
+        next_id = 1   # Reset next_id
         self.update_task_list()
 
     def update_task_list(self) -> None:
@@ -32,7 +37,7 @@ class TodoApp(App):
         tasks = get_all_tasks()
         if tasks:
             for task in tasks:
-                task_list_view.append(ListItem(Static(f"ID: {task.id}, Title: {task.title}, Status: {task.status}", classes="task-item"), id=f"task-{task.id}"))
+                task_list_view.append(ListItem(Static(f"ID: {task.id}, Title: {task.title}, Status: {task.status}", classes="task-item")))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
 
@@ -46,8 +51,8 @@ class TodoApp(App):
     def get_selected_task_id(self) -> int | None:
         task_list_view = self.query_one("#task_list", ListView)
         if task_list_view.highlighted_child:
-            # Assuming ID is in the format "task-<id>"
-            task_id_str = task_list_view.highlighted_child.id.split("-")[1]
+            task_item_static = task_list_view.highlighted_child.query_one(".task-item", Static)
+            task_id_str = task_item_static.renderable.split(",")[0].split(": ")[1]
             return int(task_id_str)
         return None
 
