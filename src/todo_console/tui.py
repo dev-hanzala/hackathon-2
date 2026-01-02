@@ -4,6 +4,16 @@ from textual.containers import Container, Horizontal
 from todo_console.models import get_all_tasks, add_task, mark_task_complete, update_task, delete_task, TODOS, next_id
 
 class TodoApp(App):
+    CSS = """
+    ..-dark-mode {
+        background: #202020;
+        color: #f0f0f0;
+    }
+    Screen {
+        background: #f0f0f0; /* Default light mode background */
+        color: #202020;    /* Default light mode text */
+    }
+    """
     BINDINGS = [
         ("d", "toggle_dark", "Toggle dark mode"),
         ("q", "quit", "Quit"),
@@ -14,6 +24,7 @@ class TodoApp(App):
         yield Footer()
         yield Label("Welcome to TodoApp TUI!")
         with Container():
+            yield ListView(id="task_list") # Moved to top
             yield Input(placeholder="Task Title", id="task_title_input")
             yield Input(placeholder="Task Description (Optional)", id="task_description_input")
             yield Horizontal(
@@ -23,13 +34,13 @@ class TodoApp(App):
                 Button("Delete Task", id="delete_task_button", variant="error"),
             )
             yield Label("", id="status_message", classes="hidden")
-            yield ListView(id="task_list")
 
     def on_mount(self) -> None:
         self.dark = False  # Initialize dark mode to off (light mode)
         TODOS.clear() # Clear tasks for a fresh session
         next_id = 1   # Reset next_id
         self.update_task_list()
+        self.query_one("#task_list").focus() # Set initial focus to the task list
 
     def update_task_list(self) -> None:
         task_list_view = self.query_one("#task_list", ListView)
