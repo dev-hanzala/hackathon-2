@@ -26,7 +26,6 @@ class TodoApp(App):
             yield Label("", id="status_message", classes="hidden")
 
     def on_mount(self) -> None:
-        self.dark = False  # Initialize dark mode to off (light mode)
         TODOS.clear() # Clear tasks for a fresh session
         next_id = 1   # Reset next_id
         self.update_task_list()
