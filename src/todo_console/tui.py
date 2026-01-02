@@ -42,17 +42,26 @@ class TodoApp(App):
                 return text[:max_length-3] + "..."
             return text
 
+        # Define a consistent width for the content before the checkbox for alignment
+        # This is an estimate and might need adjustment based on typical terminal width
+        MAX_CONTENT_WIDTH = 70 # Example width for "ID. Title (Description)" part
+
         if tasks:
             for task in tasks:
                 checkbox = "[x]" if task.status == "completed" else "[ ]"
                 truncated_title = truncate_text(task.title, 30)
                 truncated_description = truncate_text(task.description, 30) if task.description else ""
 
+                base_text = f"{task.id}. {truncated_title}"
                 if truncated_description:
-                    display_text = f"{task.id}. {truncated_title} ({truncated_description}) {checkbox}"
-                else:
-                    display_text = f"{task.id}. {truncated_title} {checkbox}"
+                    base_text += f" ({truncated_description})"
 
+                # Calculate padding to align the '|' and checkbox
+                padding_length = MAX_CONTENT_WIDTH - len(base_text)
+                if padding_length < 1: # Ensure at least one space if content is too long
+                    padding_length = 1
+
+                display_text = f"{base_text}{' ' * padding_length}| {checkbox}"
                 task_list_view.append(ListItem(Static(display_text, classes="task-item")))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
