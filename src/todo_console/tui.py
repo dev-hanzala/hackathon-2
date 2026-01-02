@@ -48,7 +48,7 @@ class TodoApp(App):
         tasks = get_all_tasks()
         if tasks:
             for task in tasks:
-                task_list_view.append(ListItem(Static(f"{task.id}. {task.title} [{task.status}]", classes="task-item"))
+                task_list_view.append(ListItem(Static(f"{task.id}. {task.title} [{task.status}]", classes="task-item")))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
 
