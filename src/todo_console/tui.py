@@ -48,7 +48,7 @@ class TodoApp(App):
         tasks = get_all_tasks()
         if tasks:
             for task in tasks:
-                task_list_view.append(ListItem(Static(f"ID: {task.id}, Title: {task.title}, Status: {task.status}", classes="task-item")))
+                task_list_view.append(ListItem(Static(f"{task.id}. {task.title} [{task.status}]", classes="task-item"))))
         else:
             task_list_view.append(ListItem(Static("No tasks found.")))
 
@@ -63,7 +63,7 @@ class TodoApp(App):
         task_list_view = self.query_one("#task_list", ListView)
         if task_list_view.highlighted_child:
             task_item_static = task_list_view.highlighted_child.query_one(".task-item", Static)
-            task_id_str = str(task_item_static.render()).split(",")[0].split(": ")[1]
+            task_id_str = str(task_item_static.render()).split(".")[0]
             return int(task_id_str)
         return None
 
