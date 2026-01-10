@@ -1,0 +1,81 @@
+# Spec-Kit Configuration
+# Project: Hackathon II - Todo Evolution
+
+project:
+  name: hackathon-todo
+  description: "Todo application evolving from CLI to full-stack web"
+  version: "2.0.0"
+
+# Specification organization
+specs:
+  root: specs
+  categories:
+    - features/
+    - api/
+    - database/
+    - ui/
+
+# Development phases
+phases:
+  phase1-console:
+    status: completed
+    description: "In-memory CLI/TUI Todo app"
+    features:
+      - todo-mvp-cli
+
+  phase2-web:
+    status: active
+    description: "Full-stack web application"
+    tech_stack:
+      backend:
+        framework: FastAPI
+        orm: SQLModel
+        database: Neon PostgreSQL
+        auth: Better Auth (JWT)
+        runtime: Python 3.13+
+        manager: uv
+      frontend:
+        framework: Next.js 16+
+        router: App Router
+        language: TypeScript
+        manager: pnpm
+    features:
+      - task-crud
+      - authentication
+
+# Phase 2 feature definitions
+features:
+  task-crud:
+    name: "Task CRUD Operations"
+    category: features
+    description: "Create, Read, Update, Delete tasks via REST API and Web UI"
+    endpoints:
+      - GET /todos
+      - POST /todos
+      - GET /todos/{id}
+      - PUT /todos/{id}
+      - DELETE /todos/{id}
+      - PATCH /todos/{id}/complete
+
+  authentication:
+    name: "User Authentication"
+    category: features
+    description: "User registration, login, and session management with JWT"
+    endpoints:
+      - POST /auth/register
+      - POST /auth/login
+      - POST /auth/logout
+      - GET /auth/me
+
+# Monorepo services
+services:
+  backend:
+    root: backend/
+    claude_md: backend/CLAUDE.md
+  frontend:
+    root: frontend/
+    claude_md: frontend/CLAUDE.md
+
+# Governance
+governance:
+  constitution: .specify/memory/constitution.md
