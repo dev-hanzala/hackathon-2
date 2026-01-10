@@ -1,3 +1,6 @@
+description = "Record an AI exchange as a Prompt History Record (PHR) for learning and traceability."
+
+prompt = """
 ---
 description: Record an AI exchange as a Prompt History Record (PHR) for learning and traceability.
 ---
@@ -83,10 +86,10 @@ Generate a concise title (3-7 words) summarizing what was accomplished.
 Call the PHR creation script with title and stage:
 
 ```bash
-.specify/scripts/bash/create-phr.sh \
-  --title "<your-generated-title>" \
-  --stage <selected-stage> \
-  [--feature <feature-slug>] \
+.specify/scripts/bash/create-phr.sh \\
+  --title "<your-generated-title>" \\
+  --stage <selected-stage> \\
+  [--feature <feature-slug>] \\
   --json
 ```
 
@@ -193,3 +196,4 @@ As the main request completes, you MUST create and complete a PHR (Prompt Histor
 4) Validate + report
    - No unresolved placeholders; path under `history/prompts/` and matches stage; stage/title/date coherent; print ID + path + stage + title.
    - On failure: warn, don't block. Skip only for `/sp.phr`.
+"""

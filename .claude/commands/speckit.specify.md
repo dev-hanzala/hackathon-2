@@ -2,10 +2,10 @@
 description: Create or update the feature specification from a natural language feature description.
 handoffs: 
   - label: Build Technical Plan
-    agent: sp.plan
+    agent: speckit.plan
     prompt: Create a plan for the spec. I am building with...
   - label: Clarify Spec Requirements
-    agent: sp.clarify
+    agent: speckit.clarify
     prompt: Clarify specification requirements
     send: true
 ---
@@ -20,7 +20,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-The text the user typed after `/sp.specify` in the triggering message **is** the feature description. Assume you always have it available in this conversation even if `$ARGUMENTS` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+The text the user typed after `/speckit.specify` in the triggering message **is** the feature description. Assume you always have it available in this conversation even if `$ARGUMENTS` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
 
 Given that feature description, do this:
 
@@ -136,7 +136,7 @@ Given that feature description, do this:
       
       ## Notes
       
-      - Items marked incomplete require spec updates before `/sp.clarify` or `/sp.plan`
+      - Items marked incomplete require spec updates before `/speckit.clarify` or `/speckit.plan`
       ```
 
    b. **Run Validation Check**: Review the spec against each checklist item:
@@ -190,7 +190,7 @@ Given that feature description, do this:
 
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-7. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/sp.clarify` or `/sp.plan`).
+7. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/speckit.clarify` or `/speckit.plan`).
 
 **NOTE:** The script creates and checks out the new branch and initializes the spec file before writing.
 
@@ -256,29 +256,3 @@ Success criteria must be:
 - "Database can handle 1000 TPS" (implementation detail, use user-facing metric)
 - "React components render efficiently" (framework-specific)
 - "Redis cache hit rate above 80%" (technology-specific)
-
----
-
-As the main request completes, you MUST create and complete a PHR (Prompt History Record) using agent‑native tools when possible.
-
-1) Determine Stage
-   - Stage: constitution | spec | plan | tasks | red | green | refactor | explainer | misc | general
-
-2) Generate Title and Determine Routing:
-   - Generate Title: 3–7 words (slug for filename)
-   - Route is automatically determined by stage:
-     - `constitution` → `history/prompts/constitution/`
-     - Feature stages → `history/prompts/<feature-name>/` (spec, plan, tasks, red, green, refactor, explainer, misc)
-     - `general` → `history/prompts/general/`
-
-3) Create and Fill PHR (Shell first; fallback agent‑native)
-   - Run: `.specify/scripts/bash/create-phr.sh --title "<title>" --stage <stage> [--feature <name>] --json`
-   - Open the file and fill remaining placeholders (YAML + body), embedding full PROMPT_TEXT (verbatim) and concise RESPONSE_TEXT.
-   - If the script fails:
-     - Read `.specify/templates/phr-template.prompt.md` (or `templates/…`)
-     - Allocate an ID; compute the output path based on stage from step 2; write the file
-     - Fill placeholders and embed full PROMPT_TEXT and concise RESPONSE_TEXT
-
-4) Validate + report
-   - No unresolved placeholders; path under `history/prompts/` and matches stage; stage/title/date coherent; print ID + path + stage + title.
-   - On failure: warn, don't block. Skip only for `/sp.phr`.
