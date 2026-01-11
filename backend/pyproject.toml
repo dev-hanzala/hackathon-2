@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "todo-api"
 version = "0.1.0"
 description = "FastAPI backend for todo application"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 authors = [{name = "Hackathon Team"}]
 dependencies = [
     "fastapi==0.115.0",
@@ -14,20 +14,21 @@ dependencies = [
     "sqlmodel==0.0.16",
     "sqlalchemy==2.0.35",
     "alembic==1.14.0",
-    "better-auth==0.0.1",
     "pydantic==2.8.2",
     "pydantic-settings==2.4.0",
     "python-dotenv==1.0.1",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg[binary]>=3.1.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest==8.0.1",
-    "pytest-asyncio==0.23.3",
-    "httpx==0.26.0",
-    "mypy==1.13.0",
-    "ruff==0.5.5",
-    "types-python-dotenv==1.0.1",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.26.0",
+    "mypy>=1.13.0",
+    "ruff>=0.5.0",
 ]
 
 [tool.pytest.ini_options]
@@ -56,7 +57,11 @@ module = "alembic.*"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "better_auth.*"
+module = "jose.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "passlib.*"
 ignore_missing_imports = true
 
 [tool.ruff]
@@ -85,6 +90,9 @@ exclude = [
     "build",
     "dist",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
