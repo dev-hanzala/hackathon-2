@@ -6,7 +6,6 @@ T151: Request/response logging middleware for API debugging and monitoring.
 import logging
 import time
 from collections.abc import Awaitable, Callable
-from typing import cast
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
