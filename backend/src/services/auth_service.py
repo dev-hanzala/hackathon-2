@@ -5,22 +5,20 @@ T150: Add comprehensive logging for auth operations.
 """
 
 import logging
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
-from src.config import settings
 from src.db.models import Session as SessionModel
 from src.db.models import User
 from src.middleware.auth import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
     create_access_token,
     decode_access_token,
     get_password_hash,
     verify_password,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 from src.services.db_service import DBService
 
@@ -108,7 +106,7 @@ class AuthService:
         return user, access_token
 
     @staticmethod
-    def logout_user(db: Session, token: str) -> None:
+    def logout_user(_db: Session, _token: str) -> None:
         """Logout user by invalidating their session.
 
         For JWT-based auth, this is mainly a no-op on the backend since JWTs
@@ -126,7 +124,7 @@ class AuthService:
         pass
 
     @staticmethod
-    def validate_token(token: str) -> Optional[dict]:
+    def validate_token(token: str) -> dict | None:
         """Validate a JWT token and return payload if valid.
 
         Args:
@@ -143,7 +141,7 @@ class AuthService:
         return payload
 
     @staticmethod
-    def get_user_from_token(db: Session, token: str) -> Optional[User]:
+    def get_user_from_token(db: Session, token: str) -> User | None:
         """Get user from JWT token.
 
         Args:
@@ -178,7 +176,7 @@ class AuthService:
         return user
 
     @staticmethod
-    def create_session(db: Session, user_id: UUID, expires_delta: Optional[timedelta] = None) -> SessionModel:
+    def create_session(db: Session, user_id: UUID, expires_delta: timedelta | None = None) -> SessionModel:
         """Create a database session for user (optional, for session tracking).
 
         Args:
@@ -194,7 +192,7 @@ class AuthService:
         if expires_delta is None:
             expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
-        expires_at = datetime.now(timezone.utc) + expires_delta
+        expires_at = datetime.now(UTC) + expires_delta
         token = create_access_token(data={"sub": str(user_id)}, expires_delta=expires_delta)
 
         session = DBService.create_session(db, user_id, token, expires_at)

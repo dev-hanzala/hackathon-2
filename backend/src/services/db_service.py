@@ -47,7 +47,7 @@ class DBService:
         if archived is not None:
             query = query.where(Task.is_archived == archived)
 
-        return session.exec(query).all()
+        return list(session.exec(query).all())
 
     @staticmethod
     def create_user(session: Session, email: str, password_hash: str) -> User:

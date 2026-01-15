@@ -6,8 +6,8 @@ T042: /api/v1/auth/logout endpoint
 T044: Error handling for auth failures
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, status
+from sqlmodel import Session
 
 from src.api.schemas import (
     AuthResponse,
@@ -59,6 +59,7 @@ async def register(
         password=user_data.password,
     )
 
+    assert user.id is not None, "User ID must not be None"
     return AuthResponse(
         token=token,
         user=UserResponse(
@@ -105,6 +106,7 @@ async def signin(
         password=credentials.password,
     )
 
+    assert user.id is not None, "User ID must not be None"
     return AuthResponse(
         token=token,
         user=UserResponse(
@@ -124,8 +126,8 @@ async def signin(
     },
 )
 async def logout(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_session),
+    _current_user: User = Depends(get_current_user),
+    _db: Session = Depends(get_session),
 ) -> dict:
     """Sign out the current user.
 
@@ -170,6 +172,7 @@ async def get_current_user_info(
     Raises:
         HTTPException 401: If not authenticated
     """
+    assert current_user.id is not None, "User ID must not be None"
     return UserResponse(
         id=current_user.id,
         email=current_user.email,

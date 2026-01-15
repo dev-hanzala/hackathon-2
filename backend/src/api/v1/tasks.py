@@ -3,18 +3,17 @@ Tasks API endpoints (v1).
 Handles CRUD operations for user tasks.
 """
 
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session
 
+from src.api.schemas import TaskCreate, TaskUpdate
 from src.db.database import get_session
+from src.db.models import Task, User
 from src.middleware.auth import get_current_user
 from src.services.task_service import TaskService
-from src.db.models import Task, User
-from src.api.schemas import TaskCreate, TaskUpdate
-
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -28,15 +27,22 @@ class TaskResponse:
 
 @router.get("", response_model=list[Task])
 async def list_tasks(
-    current_user: Annotated[User, Depends(get_current_user)], session: Annotated[Session, Depends(get_session)]
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)],
+    completed: Annotated[Literal["true", "false", "all"], Query(description="Filter by completion status")] = "false",
+    is_archived: Annotated[Literal["true", "false", "all"], Query(description="Filter by archived status")] = "false",
 ):
     """
-    List all active tasks for the authenticated user.
+    List tasks for the authenticated user with optional filtering.
+
+    Query Parameters:
+    - completed: Filter by completion status (true, false, all) - default: false
+    - is_archived: Filter by archived status (true, false, all) - default: false
 
     Returns tasks that are:
     - Owned by the current user
-    - Not completed (completed=false)
-    - Not archived (is_archived=false)
+    - Filtered by completed status (default: not completed)
+    - Filtered by archived status (default: not archived)
 
     Tasks are ordered by created_at descending (newest first).
 
@@ -51,8 +57,13 @@ async def list_tasks(
     - created_at: datetime
     - updated_at: datetime
     """
+    # Convert query params to include flags
+    include_completed = completed == "all"
+    include_archived = is_archived == "all"
+
+    assert current_user.id is not None, "User ID must not be None"
     tasks = TaskService.list_tasks_for_user(
-        session=session, user_id=current_user.id, include_completed=False, include_archived=False
+        session=session, user_id=current_user.id, include_completed=include_completed, include_archived=include_archived
     )
 
     return tasks
@@ -73,6 +84,7 @@ async def get_task(
     Raises:
         404: Task not found or not owned by current user
     """
+    assert current_user.id is not None, "User ID must not be None"
     task = TaskService.get_task_by_id(session=session, task_id=task_id, user_id=current_user.id)
 
     if not task:
@@ -107,6 +119,7 @@ async def create_task(
     Raises:
         422: Invalid request body (empty/missing title, title too long)
     """
+    assert current_user.id is not None, "User ID must not be None"
     task = TaskService.create_task(session=session, user_id=current_user.id, title=task_data.title)
 
     return task
@@ -129,6 +142,7 @@ async def mark_task_complete(
     Raises:
         404: Task not found or not owned by current user
     """
+    assert current_user.id is not None, "User ID must not be None"
     task = TaskService.mark_task_complete(session=session, task_id=task_id, user_id=current_user.id)
 
     if not task:
@@ -154,6 +168,7 @@ async def mark_task_incomplete(
     Raises:
         404: Task not found or not owned by current user
     """
+    assert current_user.id is not None, "User ID must not be None"
     task = TaskService.mark_task_incomplete(session=session, task_id=task_id, user_id=current_user.id)
 
     if not task:
@@ -186,6 +201,7 @@ async def update_task(
         404: Task not found or not owned by current user
         422: Invalid request body (empty/missing title, title too long)
     """
+    assert current_user.id is not None, "User ID must not be None"
     task = TaskService.update_task_title(
         session=session, task_id=task_id, user_id=current_user.id, new_title=task_data.title
     )
@@ -215,6 +231,7 @@ async def delete_task(
     Raises:
         404: Task not found or not owned by current user
     """
+    assert current_user.id is not None, "User ID must not be None"
     success = TaskService.delete_task(session=session, task_id=task_id, user_id=current_user.id)
 
     if not success:

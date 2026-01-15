@@ -6,8 +6,8 @@ T037: Session persistence test
 """
 
 import pytest
-from httpx import AsyncClient
 from fastapi import status
+from httpx import AsyncClient
 
 
 class TestRegistrationFlow:

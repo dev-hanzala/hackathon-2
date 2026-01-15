@@ -4,7 +4,7 @@ T152: Sentry integration for production error visibility.
 """
 
 import logging
-from typing import Optional
+from typing import Literal
 
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def setup_error_tracking(
-    dsn: Optional[str],
+    dsn: str | None,
     environment: str = "development",
     traces_sample_rate: float = 1.0,
     profiles_sample_rate: float = 1.0,
@@ -65,7 +65,7 @@ def setup_error_tracking(
         pass
 
 
-def capture_exception(error: Exception, context: Optional[dict] = None) -> None:
+def capture_exception(error: Exception, context: dict | None = None) -> None:
     """
     Manually capture an exception to Sentry with optional context.
 
@@ -85,7 +85,11 @@ def capture_exception(error: Exception, context: Optional[dict] = None) -> None:
         logger.error(f"Failed to capture exception in Sentry: {e}")
 
 
-def capture_message(message: str, level: str = "info", context: Optional[dict] = None) -> None:
+def capture_message(
+    message: str,
+    level: Literal["fatal", "critical", "error", "warning", "info", "debug"] = "info",
+    context: dict | None = None,
+) -> None:
     """
     Capture a message to Sentry with optional context.
 

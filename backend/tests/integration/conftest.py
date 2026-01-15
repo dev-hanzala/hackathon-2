@@ -3,7 +3,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import Session, SQLModel
+from sqlmodel import SQLModel
 
 # Use in-memory SQLite for integration tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"

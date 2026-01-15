@@ -86,6 +86,7 @@ lint.ignore = [
     "B008",  # Do not perform function calls in argument defaults
     "C901",  # Too complex
 ]
+lint.per-file-ignores = {"tests/*" = ["ARG001", "ARG002", "ARG004"]}  # Pytest fixtures are used via dependency injection
 exclude = [
     ".git",
     "__pycache__",

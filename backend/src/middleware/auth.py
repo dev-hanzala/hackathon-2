@@ -4,19 +4,18 @@ Better Auth runs on the Next.js frontend and handles user authentication.
 This middleware validates session tokens from Better Auth and extracts user info.
 """
 
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
+from typing import cast
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from src.config import settings
 from src.db.database import get_session
-from src.db.models import Session as SessionModel
 from src.db.models import User
 
 # Password hashing context
@@ -32,31 +31,31 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    return cast(bool, pwd_context.verify(plain_password, hashed_password))
 
 
 def get_password_hash(password: str) -> str:
     """Hash a password."""
-    return pwd_context.hash(password)
+    return cast(str, pwd_context.hash(password))
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     """Create a JWT access token."""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.now(UTC) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.better_auth_secret, algorithm=ALGORITHM)
-    return encoded_jwt
+    return cast(str, encoded_jwt)
 
 
-def decode_access_token(token: str) -> Optional[dict]:
+def decode_access_token(token: str) -> dict | None:
     """Decode and validate a JWT access token."""
     try:
         payload = jwt.decode(token, settings.better_auth_secret, algorithms=[ALGORITHM])
-        return payload
+        return cast(dict, payload)
     except JWTError:
         return None
 
@@ -78,15 +77,15 @@ async def get_current_user(
     if payload is None:
         raise credentials_exception
 
-    user_id: str = payload.get("sub")
-    if user_id is None:
+    user_id = payload.get("sub")
+    if not isinstance(user_id, str) or user_id is None:
         raise credentials_exception
 
     # Get user from database
     try:
         user_uuid = UUID(user_id)
     except ValueError:
-        raise credentials_exception
+        raise credentials_exception from None
 
     from src.services.db_service import DBService
 
@@ -101,7 +100,7 @@ async def get_current_user(
 async def get_current_user_optional(
     request: Request,
     db: Session = Depends(get_session),
-) -> Optional[User]:
+) -> User | None:
     """Get current user if authenticated, None otherwise."""
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -113,8 +112,8 @@ async def get_current_user_optional(
     if payload is None:
         return None
 
-    user_id: str = payload.get("sub")
-    if user_id is None:
+    user_id = payload.get("sub")
+    if not isinstance(user_id, str) or user_id is None:
         return None
 
     try:
@@ -131,7 +130,7 @@ class AuthService:
     """Authentication service for user management."""
 
     @staticmethod
-    def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
+    def authenticate_user(db: Session, email: str, password: str) -> User | None:
         """Authenticate user with email and password."""
         from src.services.db_service import DBService
 

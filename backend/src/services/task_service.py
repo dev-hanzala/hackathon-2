@@ -5,10 +5,9 @@ T150: Add comprehensive logging for task operations.
 """
 
 import logging
-from typing import Optional
 from uuid import UUID
 
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from src.db.models import Task
 
@@ -43,14 +42,14 @@ class TaskService:
 
         # Filter by completion status if specified
         if not include_completed:
-            query = query.where(Task.completed == False)
+            query = query.where(col(Task.completed).is_(False))
 
         # Filter by archived status if specified
         if not include_archived:
-            query = query.where(Task.is_archived == False)
+            query = query.where(col(Task.is_archived).is_(False))
 
         # Order by created_at descending (newest first)
-        query = query.order_by(Task.created_at.desc())
+        query = query.order_by(col(Task.created_at).desc())
 
         results = session.exec(query).all()
         logger.info(f"✅ Retrieved {len(results)} tasks for user: {user_id}")
@@ -58,7 +57,7 @@ class TaskService:
         return list(results)
 
     @staticmethod
-    def get_task_by_id(session: Session, task_id: UUID, user_id: UUID) -> Optional[Task]:
+    def get_task_by_id(session: Session, task_id: UUID, user_id: UUID) -> Task | None:
         """
         Get a specific task by ID for a user.
 
@@ -117,7 +116,7 @@ class TaskService:
         return task
 
     @staticmethod
-    def update_task_title(session: Session, task_id: UUID, user_id: UUID, new_title: str) -> Optional[Task]:
+    def update_task_title(session: Session, task_id: UUID, user_id: UUID, new_title: str) -> Task | None:
         """
         Update a task's title.
 
@@ -157,7 +156,7 @@ class TaskService:
         return task
 
     @staticmethod
-    def mark_task_complete(session: Session, task_id: UUID, user_id: UUID) -> Optional[Task]:
+    def mark_task_complete(session: Session, task_id: UUID, user_id: UUID) -> Task | None:
         """
         Mark a task as complete and archive it.
 
@@ -188,7 +187,7 @@ class TaskService:
         return task
 
     @staticmethod
-    def mark_task_incomplete(session: Session, task_id: UUID, user_id: UUID) -> Optional[Task]:
+    def mark_task_incomplete(session: Session, task_id: UUID, user_id: UUID) -> Task | None:
         """
         Mark a task as incomplete and unarchive it.
 

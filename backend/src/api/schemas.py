@@ -1,10 +1,9 @@
 """Pydantic schemas for request/response validation."""
 
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 # User Schemas
@@ -100,4 +99,4 @@ class ErrorResponse(BaseModel):
     """Schema for error responses."""
 
     detail: str
-    code: Optional[str] = None
+    code: str | None = None

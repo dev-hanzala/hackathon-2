@@ -1,6 +1,7 @@
 """FastAPI application initialization."""
 
 import logging
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -135,7 +136,7 @@ async def startup_event():
                 cwd=str(backend_dir),
                 capture_output=True,
                 text=True,
-                env={**dict(subprocess.os.environ), "DATABASE_URL": settings.database_url},
+                env={**dict(os.environ), "DATABASE_URL": settings.database_url},
             )
 
             if result.returncode == 0:

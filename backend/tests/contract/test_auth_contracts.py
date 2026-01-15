@@ -6,8 +6,8 @@ T034: Validate /api/v1/auth/logout endpoint against OpenAPI schema
 """
 
 import pytest
-from httpx import AsyncClient
 from fastapi import status
+from httpx import AsyncClient
 
 
 class TestRegisterContract:

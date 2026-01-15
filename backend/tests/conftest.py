@@ -1,7 +1,6 @@
 """Pytest fixtures for backend testing."""
 
-import os
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
@@ -14,7 +13,7 @@ from src.db.database import get_session
 from src.db.models import Session as SessionModel
 from src.db.models import Task, User
 from src.main import app
-from src.middleware.auth import get_password_hash, create_access_token
+from src.middleware.auth import create_access_token, get_password_hash
 
 # Use in-memory SQLite for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -30,7 +29,7 @@ def db_engine():
 
     # Enable foreign key support for SQLite
     @event.listens_for(engine, "connect")
-    def set_sqlite_pragma(dbapi_conn, connection_record):
+    def set_sqlite_pragma(dbapi_conn, _connection_record):
         cursor = dbapi_conn.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
@@ -63,6 +62,8 @@ def override_get_session(db_session):
 @pytest_asyncio.fixture(scope="function")
 async def client(db_session, override_get_session):
     """Create an async test client."""
+    # db_session is needed to set up the database tables, but not used directly
+    _ = db_session  # Explicitly mark as intentionally unused
     app.dependency_overrides[get_session] = override_get_session
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
@@ -117,7 +118,7 @@ def test_user_session(db_session, test_user):
     session = SessionModel(
         user_id=test_user.id,
         token=f"test_token_{uuid4()}",
-        expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
+        expires_at=datetime.now(UTC) + timedelta(hours=1),
     )
     db_session.add(session)
     db_session.commit()

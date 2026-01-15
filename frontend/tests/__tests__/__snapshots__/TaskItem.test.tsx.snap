@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TaskItem Component Props Handling renders correctly with all optional props 1`] = `
+<div>
+  <div
+    class="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+  >
+    <button
+      aria-label="Mark complete"
+      class="flex-shrink-0 w-5 h-5 border-2 border-gray-300 rounded hover:border-blue-500 transition-colors"
+    />
+    <div
+      class="flex-1 min-w-0"
+    >
+      <h3
+        class="text-sm font-medium truncate text-gray-900"
+      >
+        Test Task
+      </h3>
+      <p
+        class="text-xs text-gray-500 mt-1"
+      >
+        Created 
+        1/15/2024
+      </p>
+    </div>
+    <div
+      class="flex items-center gap-2"
+    >
+      <button
+        aria-label="Edit task"
+        class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+      </button>
+      <button
+        aria-label="Delete task"
+        class="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+`;

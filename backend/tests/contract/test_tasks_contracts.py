@@ -3,9 +3,10 @@ Contract tests for tasks API endpoints.
 Validates API responses against OpenAPI specification.
 """
 
+from uuid import UUID
+
 import pytest
 from httpx import AsyncClient
-from uuid import UUID
 
 
 class TestTasksContractGetList:

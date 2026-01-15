@@ -1,7 +1,5 @@
 """Pytest fixtures for OpenAPI contract testing."""
 
-import json
-
 import pytest
 import yaml
 
@@ -10,7 +8,7 @@ import yaml
 def openapi_spec():
     """Load OpenAPI specification for contract testing."""
     try:
-        with open("specs/002-phase2-webapp/contracts/tasks-api.openapi.yaml", "r") as f:
+        with open("specs/002-phase2-webapp/contracts/tasks-api.openapi.yaml") as f:
             spec = yaml.safe_load(f)
         return spec
     except FileNotFoundError:
@@ -33,14 +31,14 @@ def contract_validator(openapi_spec):
                 return False
             return method.lower() in path_spec
 
-        def validate_request_schema(self, path: str, method: str, request_body: dict) -> bool:
+        def validate_request_schema(self, path: str, method: str, _request_body: dict) -> bool:
             """Validate request matches schema."""
             endpoint = self.paths.get(path, {}).get(method.lower(), {})
-            request_spec = endpoint.get("requestBody", {})
+            endpoint.get("requestBody", {})
             # Basic validation - implement full validation as needed
             return True
 
-        def validate_response_schema(self, path: str, method: str, status_code: int, response_body: dict) -> bool:
+        def validate_response_schema(self, path: str, method: str, status_code: int, _response_body: dict) -> bool:
             """Validate response matches schema."""
             endpoint = self.paths.get(path, {}).get(method.lower(), {})
             responses = endpoint.get("responses", {})

@@ -5,11 +5,11 @@ T151: Request/response logging middleware for API debugging and monitoring.
 
 import logging
 import time
-from typing import Callable
+from collections.abc import Awaitable, Callable
+from typing import cast
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.types import Message
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class LoggingMiddleware(BaseHTTPMiddleware):
     """Middleware to log all incoming requests and outgoing responses."""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
         """
         Log request details and response status with timing.
 

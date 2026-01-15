@@ -86,7 +86,7 @@ class TestTaskListIntegration:
     @pytest.mark.asyncio
     async def test_list_tasks_user_data_isolation(self, client: AsyncClient, db_session: Session):
         """T056: Test user A's tasks not visible to user B."""
-        from src.middleware.auth import get_password_hash, create_access_token
+        from src.middleware.auth import create_access_token, get_password_hash
 
         # Create User A with tasks
         password_hash_a = get_password_hash("UserA123")
