@@ -1,74 +1,95 @@
-# TUI Todo Application
+# Todo Evolution - Hackathon II
 
-This is a simple Text User Interface (TUI) Todo application built with Python 3.13+ and [Textual](https://textual.io/).
-It allows users to manage their tasks by adding, listing, completing, updating, and deleting them within a single session.
-Tasks are stored in-memory within the application's runtime and are not persisted to a file.
+A todo application demonstrating **Spec-Driven Development** - evolving from a simple console app to a cloud-native AI chatbot.
 
-## Features
+## Current Phase: Phase II (Full-Stack Web App)
 
-- **Add Task**: Add a new task with a title and an optional description using input fields.
-- **List Tasks**: View all existing tasks with their ID, title, description, and status in a list view.
-- **Complete Task**: Mark a selected task as completed using a button.
-- **Update Task**: Modify the title or description of a selected task using input fields and a button.
-- **Delete Task**: Remove a selected task from the list using a button.
-- **Dark Mode**: Toggle dark mode with `d` keybinding.
-- **Quit**: Exit the application with `q` keybinding.
+| Phase | Description | Status |
+|-------|-------------|--------|
+| I | In-Memory Console App | Completed |
+| II | Full-Stack Web Application | **Active** |
+| III | AI-Powered Chatbot | Planned |
+| IV | Local Kubernetes | Planned |
+| V | Cloud Deployment | Planned |
 
-## Installation
+## Quick Start
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
-
-2.  **Install `uv` (if you don't have it):**
-    ```bash
-    pip install uv
-    ```
-
-3.  **Install dependencies:**
-    ```bash
-    uv pip install -e . textual
-    ```
-
-## Usage
-
-To run the application, use the following command:
-
+### Phase I - Console App
 ```bash
+cd phase1-console/
+uv sync
 uv run python -m src.todo_console.main
 ```
 
-Once the TUI is running:
-
--   Use the input fields at the top to add or update task details.
--   Click the "Add Task" button to create a new task.
--   Select a task from the list to enable "Complete", "Update", and "Delete" actions.
--   Click the "Complete Task" button to mark the selected task as completed.
--   Enter new title/description in the input fields and click "Update Task" to modify the selected task.
--   Click the "Delete Task" button to remove the selected task.
--   Press `d` to toggle dark mode.
--   Press `q` to quit the application.
-
-## Testing
-
-To run the unit tests (integration tests were removed as the CLI is replaced by TUI):
-
+### Phase II - Web App (Coming Soon)
 ```bash
-uv run pytest
+# Backend
+cd backend/
+uv sync
+uv run uvicorn src.todo_api.main:app --reload
+
+# Frontend
+cd frontend/
+pnpm install
+pnpm dev
 ```
 
-## Linting and Formatting
+## Project Structure
 
-To check for linting and formatting issues:
-
-```bash
-uv run ruff check .
+```
+hackathon-todo/
+├── phase1-console/       # Phase I: TUI app (completed)
+├── backend/              # Phase II: FastAPI
+├── frontend/             # Phase II: Next.js
+├── specs/                # Feature specifications
+├── .specify/             # Spec-Kit configuration
+└── history/              # Prompt history records
 ```
 
-To automatically fix linting and formatting issues:
+## Technology Stack
 
-```bash
-uv run ruff check . --fix
-```
+### Phase II
+- **Frontend:** Next.js 16+ (App Router), TypeScript
+- **Backend:** FastAPI, SQLModel, Python 3.13+
+- **Database:** Neon Serverless PostgreSQL
+- **Auth:** Better Auth with JWT
+
+## Features
+
+### Basic (All Phases)
+- Add Task
+- View Task List
+- Update Task
+- Delete Task
+- Mark Complete
+
+### Phase II Additions
+- User Authentication
+- Persistent Storage
+- RESTful API
+- Web UI
+
+## Development
+
+This project uses **Spec-Driven Development**:
+
+1. Write specifications in `specs/`
+2. Generate implementation plans
+3. Build from specs using Claude Code
+4. Document with Prompt History Records
+
+See `CLAUDE.md` for detailed development guidelines.
+
+## Documentation
+
+| Document | Location |
+|----------|----------|
+| Constitution | `.specify/memory/constitution.md` |
+| Project Overview | `specs/overview.md` |
+| Phase I Docs | `phase1-console/README.md` |
+| Backend Docs | `backend/CLAUDE.md` |
+| Frontend Docs | `frontend/CLAUDE.md` |
+
+## License
+
+MIT

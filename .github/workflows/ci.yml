@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 002-phase2-webapp]
+  pull_request:
+    branches: [main, 002-phase2-webapp]
+
+jobs:
+  backend-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'  # GitHub Actions doesn't have 3.14 yet
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Lint with ruff
+        run: uv run ruff check .
+
+      - name: Type check with mypy
+        run: uv run mypy src --no-error-summary
+
+      - name: Run tests (unit only - no DB required)
+        env:
+          DATABASE_URL: sqlite:///test.db
+          BETTER_AUTH_SECRET: test-secret-key-for-ci-only
+        run: uv run pytest tests/unit/ -v
+
+  frontend-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+            version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint with ESLint
+        run: pnpm run lint
+
+      - name: Type check with TypeScript
+        run: pnpm run type-check
+
+      - name: Run tests
+        run: pnpm test
+
+  build:
+    needs: [backend-lint, frontend-lint]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'  # GitHub Actions doesn't have 3.14 yet
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Build backend
+        working-directory: ./backend
+        run: |
+          uv sync
+          uv build
+
+      - name: Build frontend
+        working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_API_VERSION: v1
+        run: |
+          pnpm install
+          pnpm run build

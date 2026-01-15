@@ -1,0 +1,490 @@
+openapi: 3.1.0
+info:
+  title: Phase II Todo API
+  description: RESTful API for todo application with user authentication and task management
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: https://api.example.com/api/v1
+    description: Production (Phase II+)
+  - url: http://localhost:8000/api/v1
+    description: Local development
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                password:
+                  type: string
+                  minLength: 8
+                  description: User password (min 8 chars)
+              required:
+                - email
+                - password
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  email:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+        "400":
+          description: Invalid request (email format, password too short)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/signin:
+    post:
+      summary: Sign in user (login)
+      operationId: signinUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: User signed in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  email:
+                    type: string
+                  session_token:
+                    type: string
+                    description: JWT or session token (also set in HttpOnly cookie)
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: "session=<token>; Path=/; HttpOnly; Secure; SameSite=Strict"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/logout:
+    post:
+      summary: Sign out user (logout)
+      operationId: logoutUser
+      tags:
+        - Authentication
+      security:
+        - SessionAuth: []
+      responses:
+        "200":
+          description: User logged out successfully
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /tasks:
+    get:
+      summary: List all tasks for authenticated user
+      operationId: listTasks
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      responses:
+        "200":
+          description: List of user's active (non-archived) tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      summary: Create a new task
+      operationId: createTask
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                  description: Task title
+              required:
+                - title
+      responses:
+        "201":
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Invalid request (empty title)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /tasks/{taskId}:
+    get:
+      summary: Get a specific task
+      operationId: getTask
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Task does not belong to authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      summary: Update a task (title)
+      operationId: updateTask
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+              required:
+                - title
+      responses:
+        "200":
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Invalid request (empty title)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Task does not belong to authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      summary: Delete a task permanently
+      operationId: deleteTask
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Task deleted successfully (no content)
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Task does not belong to authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /tasks/{taskId}/complete:
+    patch:
+      summary: Mark task as complete (archive)
+      operationId: completeTask
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Task marked complete and archived
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Task does not belong to authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /tasks/{taskId}/incomplete:
+    patch:
+      summary: Mark task as incomplete (unarchive)
+      operationId: incompleteTask
+      tags:
+        - Tasks
+      security:
+        - SessionAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Task marked incomplete and unarchived
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Task does not belong to authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /health:
+    get:
+      summary: Health check endpoint
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique task identifier
+        title:
+          type: string
+          description: Task title
+        completed:
+          type: boolean
+          description: Whether task is marked complete
+        is_archived:
+          type: boolean
+          description: Whether task is archived (soft-deleted)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - completed
+        - is_archived
+        - created_at
+        - updated_at
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code (e.g., "INVALID_REQUEST", "UNAUTHORIZED", "NOT_FOUND")
+      required:
+        - error
+        - code
+
+  securitySchemes:
+    SessionAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Better Auth JWT session token (also sent as HttpOnly cookie)
