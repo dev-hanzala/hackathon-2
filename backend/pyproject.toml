@@ -9,14 +9,14 @@ description = "FastAPI backend for todo application"
 requires-python = ">=3.11"
 authors = [{name = "Hackathon Team"}]
 dependencies = [
-    "fastapi==0.115.0",
-    "uvicorn[standard]==0.30.0",
-    "sqlmodel==0.0.16",
-    "sqlalchemy==2.0.35",
-    "alembic==1.14.0",
-    "pydantic==2.8.2",
-    "pydantic-settings==2.4.0",
-    "python-dotenv==1.0.1",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "sqlmodel>=0.0.16",
+    "sqlalchemy>=2.0.35",
+    "alembic>=1.14.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+    "python-dotenv>=1.0.1",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
     "psycopg[binary]>=3.1.0",
@@ -40,7 +40,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
@@ -66,7 +66,7 @@ ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py313"
+target-version = "py314"
 lint.select = [
     "E",    # pycodestyle errors
     "W",    # pycodestyle warnings

@@ -75,15 +75,15 @@ class APIClient {
     const { params, ...fetchOptions } = options;
     const url = this.buildURL(endpoint, params);
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...fetchOptions.headers,
+      ...(fetchOptions.headers as Record<string, string>),
     };
 
     // Add auth token if available
     const token = this.getAuthToken();
     if (token) {
-      headers.Authorization = `Bearer ${token}`;
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     try {

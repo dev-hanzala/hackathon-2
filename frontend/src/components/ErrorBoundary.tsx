@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, ReactElement } from 'react';
+import React, { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -26,7 +26,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
     console.error('Error caught by boundary:', error, errorInfo);
   }
 
-  render(): ReactElement {
+  render(): ReactNode {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
@@ -60,6 +60,6 @@ export class ErrorBoundary extends React.Component<Props, State> {
       );
     }
 
-    return this.props.children as ReactElement;
+    return this.props.children;
   }
 }

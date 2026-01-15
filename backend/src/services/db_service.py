@@ -2,8 +2,7 @@
 
 from uuid import UUID
 
-from sqlalchemy.orm import Session
-from sqlmodel import select
+from sqlmodel import Session, select
 
 from src.db.models import Session as SessionModel
 from src.db.models import Task, User

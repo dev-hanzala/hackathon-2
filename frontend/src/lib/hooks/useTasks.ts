@@ -15,8 +15,9 @@ export function useTasks() {
   const listTasks = useQuery({
     queryKey: TASKS_QUERY_KEY,
     queryFn: async () => {
-      const response = await apiClient.get<{ tasks: Task[] }>('/tasks');
-      return response.tasks || [];
+      // API returns array of tasks directly, not wrapped in object
+      const response = await apiClient.get<Task[]>('/tasks');
+      return response;
     },
     enabled: true, // Only enable when user is authenticated
   });
@@ -69,15 +70,27 @@ export function useTasks() {
     mutationFn: async (taskId: string) => {
       return apiClient.patch<Task>(`/tasks/${taskId}/complete`, {});
     },
-    onSuccess: (completedTask) => {
+    onMutate: async (taskId) => {
+      // Optimistically remove task from list (it gets archived)
+      await queryClient.cancelQueries({ queryKey: TASKS_QUERY_KEY });
+      const previousTasks = queryClient.getQueryData<Task[]>(TASKS_QUERY_KEY);
+      
       queryClient.setQueryData(TASKS_QUERY_KEY, (old: Task[] | undefined) => {
-        return (old || []).map((task) =>
-          task.id === completedTask.id ? completedTask : task
-        );
+        return (old || []).filter((task) => task.id !== taskId);
       });
+
+      return { previousTasks };
     },
-    onError: (error: APIError) => {
+    onError: (error: APIError, _taskId, context) => {
+      // Rollback on error
+      if (context?.previousTasks) {
+        queryClient.setQueryData(TASKS_QUERY_KEY, context.previousTasks);
+      }
       console.error('Failed to complete task:', error);
+    },
+    onSuccess: () => {
+      // Invalidate to get fresh data from server
+      queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
     },
   });
 

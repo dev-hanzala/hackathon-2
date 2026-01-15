@@ -1,18 +1,20 @@
 """Pytest fixtures for backend testing."""
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy import create_engine, event
 from sqlmodel import Session, SQLModel
 
+from src.db.database import get_session
 from src.db.models import Session as SessionModel
 from src.db.models import Task, User
 from src.main import app
+from src.middleware.auth import get_password_hash, create_access_token
 
 # Use in-memory SQLite for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -24,8 +26,15 @@ def db_engine():
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
         connect_args={"check_same_thread": False},
-        poolclass=None,
     )
+
+    # Enable foreign key support for SQLite
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_conn, connection_record):
+        cursor = dbapi_conn.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)
@@ -34,33 +43,39 @@ def db_engine():
 @pytest.fixture(scope="function")
 def db_session(db_engine):
     """Create a test database session."""
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
-    session = TestingSessionLocal()
-    yield session
-    session.close()
+    with Session(db_engine) as session:
+        yield session
 
 
 @pytest.fixture(scope="function")
-def test_client(db_session):
-    """Create a test client."""
+def override_get_session(db_session):
+    """Override the get_session dependency."""
 
-    def override_get_db():
+    def _override_get_session():
         try:
             yield db_session
         finally:
-            db_session.close()
+            pass
 
-    app.dependency_overrides[get_session] = override_get_db
-    client = TestClient(app)
-    yield client
+    return _override_get_session
+
+
+@pytest_asyncio.fixture(scope="function")
+async def client(db_session, override_get_session):
+    """Create an async test client."""
+    app.dependency_overrides[get_session] = override_get_session
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
     app.dependency_overrides.clear()
 
 
 @pytest.fixture
 def test_user(db_session):
-    """Create a test user."""
+    """Create a test user with unhashed password."""
+    # This user has a raw hash that won't work for authentication testing
     user = User(
-        email="test@example.com",
+        email="raw_test@example.com",
         password_hash="hashed_password_123",
     )
     db_session.add(user)
@@ -70,12 +85,39 @@ def test_user(db_session):
 
 
 @pytest.fixture
+def registered_user(db_session):
+    """Create a test user with properly hashed password for auth testing."""
+    password_hash = get_password_hash("TestPassword123")
+    user = User(
+        email="test@example.com",
+        password_hash=password_hash,
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def auth_token(registered_user):
+    """Create a valid JWT token for the registered user."""
+    token = create_access_token(data={"sub": str(registered_user.id), "email": registered_user.email})
+    return token
+
+
+@pytest.fixture
+def auth_headers(auth_token):
+    """Create authorization headers with valid JWT token."""
+    return {"Authorization": f"Bearer {auth_token}"}
+
+
+@pytest.fixture
 def test_user_session(db_session, test_user):
-    """Create a test session for auth."""
+    """Create a test session for auth (legacy fixture)."""
     session = SessionModel(
         user_id=test_user.id,
         token=f"test_token_{uuid4()}",
-        expires_at=datetime.utcnow() + timedelta(hours=1),
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
     )
     db_session.add(session)
     db_session.commit()
@@ -94,14 +136,3 @@ def test_task(db_session, test_user):
     db_session.commit()
     db_session.refresh(task)
     return task
-
-
-@pytest.fixture
-def auth_headers(test_user_session):
-    """Create authorization headers for a test session."""
-    return {"Authorization": f"Bearer {test_user_session.token}"}
-
-
-def get_session():
-    """Placeholder for dependency."""
-    pass
