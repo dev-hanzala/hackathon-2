@@ -43,7 +43,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.13"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
@@ -69,7 +69,7 @@ ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py314"
+target-version = "py313"
 lint.select = [
     "E",    # pycodestyle errors
     "W",    # pycodestyle warnings

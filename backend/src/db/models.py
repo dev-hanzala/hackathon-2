@@ -18,7 +18,7 @@ class User(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Relationships
-    tasks: list[Task] = Relationship(back_populates="user", cascade_delete=True)
+    tasks: list["Task"] = Relationship(back_populates="user", cascade_delete=True)
 
 
 class Task(SQLModel, table=True):
