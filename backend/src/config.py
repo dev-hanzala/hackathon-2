@@ -1,5 +1,7 @@
 """Application configuration from environment variables."""
 
+from typing import Optional
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,6 +23,11 @@ class Settings(BaseSettings):
 
     # API Configuration
     api_version: str = "v1"
+
+    # Error Tracking Configuration (T152)
+    sentry_dsn: Optional[str] = None
+    sentry_traces_sample_rate: float = 1.0
+    sentry_profiles_sample_rate: float = 1.0
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
 

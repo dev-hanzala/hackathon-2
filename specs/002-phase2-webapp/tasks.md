@@ -311,27 +311,27 @@
 
 **Purpose**: Cross-story integration, edge case handling, performance optimization, documentation
 
-- [ ] T149 [P] Implement database migrations runner in startup (backend/src/main.py runs alembic upgrade head on app start)
-- [ ] T150 [P] Add comprehensive logging to backend services (auth, task operations, errors) for debugging and monitoring
-- [ ] T151 [P] Implement request/response logging middleware in backend for API debugging
-- [ ] T152 Add error tracking/reporting (Sentry or similar) for production error visibility
-- [ ] T153 [P] Add CORS configuration in backend/src/main.py for frontend domain (allow credentials, specific methods)
+- [X] T149 [P] Implement database migrations runner in startup (backend/src/main.py runs alembic upgrade head on app start)
+- [X] T150 [P] Add comprehensive logging to backend services (auth, task operations, errors) for debugging and monitoring
+- [X] T151 [P] Implement request/response logging middleware in backend for API debugging
+- [X] T152 Add error tracking/reporting (Sentry or similar) for production error visibility
+- [X] T153 [P] Add CORS configuration in backend/src/main.py for frontend domain (allow credentials, specific methods)
 - [ ] T154 [P] Test session expiration flow (expired session → automatic redirect to signin page, graceful logout)
 - [ ] T155 [P] Test network failure scenarios (create/update/delete with network error → UI shows error, user can retry)
 - [ ] T156 Test concurrent operations (two users modifying tasks simultaneously → Last-Write-Wins, no data corruption)
 - [ ] T157 [P] Test rapid task creation (5+ tasks created in quick succession → all unique IDs, no duplicates)
 - [ ] T158 Load test with 100+ tasks per user (verify <2 second load time per SC-002)
-- [ ] T159 Performance optimization: ensure DB queries use proper indexes (user_id, completed, is_archived)
+- [X] T159 Performance optimization: ensure DB queries use proper indexes (user_id, completed, is_archived)
 - [ ] T160 [P] Test mobile responsiveness: verify all pages render correctly on 320px, 768px, 1024px, 2560px widths
 - [ ] T161 [P] Test accessibility: keyboard navigation, screen reader compatibility (basic WCAG)
 - [ ] T162 Add unit tests for backend services (auth_service, task_service functions without DB)
 - [ ] T163 Add unit tests for frontend components (TaskItem, TaskList, TaskForm component rendering tests)
-- [ ] T164 Create API documentation: update backend/src/main.py OpenAPI config for auto-docs at /api/v1/docs
-- [ ] T165 Update README.md files: backend/README.md and frontend/README.md with setup, running, testing instructions
+- [X] T164 Create API documentation: update backend/src/main.py OpenAPI config for auto-docs at /api/v1/docs
+- [X] T165 Update README.md files: backend/README.md and frontend/README.md with setup, running, testing instructions
 - [ ] T166 Validate quickstart.md guide: follow all steps, verify project runs without errors
-- [ ] T167 [P] Add production config: environment variables for production deployment (database URL, auth secret, CORS domain)
-- [ ] T168 Add database backup script and documentation
-- [ ] T169 Create deployment guide for Phase III (serverless backend, Next.js frontend on Vercel)
+- [X] T167 [P] Add production config: environment variables for production deployment (database URL, auth secret, CORS domain)
+- [X] T168 Add database backup script and documentation
+- [X] T169 Create deployment guide for Phase III (serverless backend, Next.js frontend on Vercel)
 
 **✅ Checkpoint**: All user stories integrated, tested, documented. MVP complete and production-ready.
 

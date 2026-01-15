@@ -21,7 +21,7 @@ from src.db.models import User
 from src.middleware.auth import get_current_user
 from src.services.auth_service import AuthService
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post(

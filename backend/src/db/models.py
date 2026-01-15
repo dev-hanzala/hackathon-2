@@ -10,6 +10,8 @@ from sqlmodel import Field, Relationship, SQLModel
 class User(SQLModel, table=True):
     """User model for authentication."""
 
+    __tablename__ = "user"  # Explicit table name
+
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
     email: str = Field(unique=True, index=True, max_length=255)
     password_hash: str = Field(max_length=255)
@@ -22,6 +24,8 @@ class User(SQLModel, table=True):
 
 class Task(SQLModel, table=True):
     """Task model for todo items."""
+
+    __tablename__ = "task"  # Explicit table name
 
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id", index=True)
@@ -37,6 +41,8 @@ class Task(SQLModel, table=True):
 
 class Session(SQLModel, table=True):
     """Session model for Better Auth integration."""
+
+    __tablename__ = "session"  # Explicit table name
 
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id", index=True)
