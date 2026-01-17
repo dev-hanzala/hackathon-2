@@ -42,19 +42,19 @@ This is a **web application** with separate frontend and backend:
 
 ### Implementation for User Story 4
 
-- [ ] T004 [P] [US4] Remove Sentry SDK from backend/pyproject.toml dependencies section
-- [ ] T005 [US4] Delete backend/src/monitoring/error_tracking.py file entirely
-- [ ] T006 [US4] Remove Sentry initialization from backend/src/main.py (lines with sentry_sdk.init)
-- [ ] T007 [US4] Remove Sentry config fields from backend/src/config.py (sentry_dsn, sentry_traces_sample_rate, sentry_profiles_sample_rate)
-- [ ] T008 [US4] Remove SENTRY_DSN from backend/.env.example
-- [ ] T009 [US4] Delete .github/workflows/ci.yml file
-- [ ] T010 [US4] Run backend dependency sync: cd backend && uv sync
-- [ ] T011 [US4] Start backend server and verify no Sentry-related errors: cd backend && uv run uvicorn src.main:app --reload
-- [ ] T012 [US4] Run all backend tests to verify no breaks: cd backend && uv run pytest tests/
-- [ ] T013 [US4] Run all frontend tests to verify no breaks: cd frontend && pnpm test
-- [ ] T014 [US4] Search codebase for remaining "sentry" references: grep -r "sentry" backend/ frontend/ --exclude-dir=node_modules --exclude-dir=.git
-- [ ] T015 [US4] Update README.md to remove Sentry and GitHub Actions from infrastructure section
-- [ ] T016 [US4] Update docs/deployment-guide.md to remove Sentry environment variable instructions
+- [X] T004 [P] [US4] Remove Sentry SDK from backend/pyproject.toml dependencies section
+- [X] T005 [US4] Delete backend/src/monitoring/error_tracking.py file entirely
+- [X] T006 [US4] Remove Sentry initialization from backend/src/main.py (lines with sentry_sdk.init)
+- [X] T007 [US4] Remove Sentry config fields from backend/src/config.py (sentry_dsn, sentry_traces_sample_rate, sentry_profiles_sample_rate)
+- [X] T008 [US4] Remove SENTRY_DSN from backend/.env.example
+- [X] T009 [US4] Delete .github/workflows/ci.yml file
+- [X] T010 [US4] Run backend dependency sync: cd backend && uv sync
+- [X] T011 [US4] Start backend server and verify no Sentry-related errors: cd backend && uv run uvicorn src.main:app --reload
+- [X] T012 [US4] Run all backend tests to verify no breaks: cd backend && uv run pytest tests/
+- [X] T013 [US4] Run all frontend tests to verify no breaks: cd frontend && pnpm test
+- [X] T014 [US4] Search codebase for remaining "sentry" references: grep -r "sentry" backend/ frontend/ --exclude-dir=node_modules --exclude-dir=.git
+- [X] T015 [US4] Update README.md to remove Sentry and GitHub Actions from infrastructure section
+- [X] T016 [US4] Update docs/deployment-guide.md to remove Sentry environment variable instructions
 
 **Checkpoint**: Infrastructure cleanup complete. Application runs cleanly without external dependencies.
 
@@ -66,17 +66,17 @@ This is a **web application** with separate frontend and backend:
 
 **⚠️ CRITICAL**: User stories 1, 2, and 3 cannot proceed until shadcn/ui is installed
 
-- [ ] T017 Install shadcn/ui CLI in frontend: cd frontend && npx shadcn@latest init (select: TypeScript=Yes, Style=Default, Base color=Slate, CSS variables=Yes, Tailwind config=tailwind.config.js, Import alias=@/components, RSC=Yes)
-- [ ] T018 [P] Add Button component: cd frontend && npx shadcn@latest add button
-- [ ] T019 [P] Add Card component: cd frontend && npx shadcn@latest add card
-- [ ] T020 [P] Add Input component: cd frontend && npx shadcn@latest add input
-- [ ] T021 [P] Add Label component: cd frontend && npx shadcn@latest add label
-- [ ] T022 [P] Add Form component: cd frontend && npx shadcn@latest add form
-- [ ] T023 [P] Add Checkbox component: cd frontend && npx shadcn@latest add checkbox
-- [ ] T024 [P] Install lucide-react icons: cd frontend && pnpm add lucide-react
-- [ ] T025 Verify shadcn/ui components exist in frontend/src/components/ui/ directory
-- [ ] T026 Verify lib/utils.ts contains cn() utility function
-- [ ] T027 Run type check to verify no errors: cd frontend && pnpm run type-check
+- [X] T017 Install shadcn/ui CLI in frontend: cd frontend && npx shadcn@latest init (select: TypeScript=Yes, Style=Default, Base color=Slate, CSS variables=Yes, Tailwind config=tailwind.config.js, Import alias=@/components, RSC=Yes)
+- [X] T018 [P] Add Button component: cd frontend && npx shadcn@latest add button
+- [X] T019 [P] Add Card component: cd frontend && npx shadcn@latest add card
+- [X] T020 [P] Add Input component: cd frontend && npx shadcn@latest add input
+- [X] T021 [P] Add Label component: cd frontend && npx shadcn@latest add label
+- [X] T022 [P] Add Form component: cd frontend && npx shadcn@latest add form
+- [X] T023 [P] Add Checkbox component: cd frontend && npx shadcn@latest add checkbox
+- [X] T024 [P] Install lucide-react icons: cd frontend && pnpm add lucide-react
+- [X] T025 Verify shadcn/ui components exist in frontend/src/components/ui/ directory
+- [X] T026 Verify lib/utils.ts contains cn() utility function
+- [X] T027 Run type check to verify no errors: cd frontend && pnpm run type-check
 - [ ] T028 Create simple test page to verify shadcn/ui components render: frontend/src/app/test-components/page.tsx
 
 **Checkpoint**: shadcn/ui foundation ready - UI component work can now begin in parallel
@@ -93,17 +93,17 @@ This is a **web application** with separate frontend and backend:
 
 ### Implementation for User Story 2
 
-- [ ] T029 [P] [US2] Install next-themes library: cd frontend && pnpm add next-themes
-- [ ] T030 [US2] Create theme provider in frontend/src/app/providers.tsx (wrap children with ThemeProvider from next-themes, set attribute="class", defaultTheme="light", enableSystem=false, storageKey="theme")
-- [ ] T031 [US2] Update root layout frontend/src/app/layout.tsx to wrap children with Providers component and add suppressHydrationWarning to html element
-- [ ] T032 [P] [US2] Add dark mode CSS variables to frontend/src/styles/globals.css (add :root and .dark selectors with color variables per research.md)
-- [ ] T033 [P] [US2] Update frontend/tailwind.config.js to enable class-based dark mode (set darkMode: 'class') and add color tokens mapping to CSS variables
-- [ ] T034 [US2] Create ThemeToggle component in frontend/src/components/ThemeToggle.tsx (use useTheme hook, Button component, Sun and Moon icons from lucide-react)
-- [ ] T035 [US2] Add ThemeToggle to navigation/header (update frontend/src/app/layout.tsx or create Header component)
-- [ ] T036 [US2] Test theme toggle on all existing pages (/, /auth/signin, /auth/signup, /tasks) and verify colors change correctly
-- [ ] T037 [US2] Verify theme preference persists: toggle to dark, refresh page, should still be dark
-- [ ] T038 [US2] Test edge case: clear localStorage, verify defaults to light mode
-- [ ] T039 [US2] Measure theme toggle performance with performance.now() - verify <200ms (per SC-002)
+- [X] T029 [P] [US2] Install next-themes library: cd frontend && pnpm add next-themes
+- [X] T030 [US2] Create theme provider in frontend/src/app/providers.tsx (wrap children with ThemeProvider from next-themes, set attribute="class", defaultTheme="light", enableSystem=false, storageKey="theme")
+- [X] T031 [US2] Update root layout frontend/src/app/layout.tsx to wrap children with Providers component and add suppressHydrationWarning to html element
+- [X] T032 [P] [US2] Add dark mode CSS variables to frontend/src/styles/globals.css (add :root and .dark selectors with color variables per research.md)
+- [X] T033 [P] [US2] Update frontend/tailwind.config.js to enable class-based dark mode (set darkMode: 'class') and add color tokens mapping to CSS variables
+- [X] T034 [US2] Create ThemeToggle component in frontend/src/components/ThemeToggle.tsx (use useTheme hook, Button component, Sun and Moon icons from lucide-react)
+- [X] T035 [US2] Add ThemeToggle to navigation/header (update frontend/src/app/layout.tsx or create Header component)
+- [X] T036 [US2] Test theme toggle on all existing pages (/, /auth/signin, /auth/signup, /tasks) and verify colors change correctly
+- [X] T037 [US2] Verify theme preference persists: toggle to dark, refresh page, should still be dark
+- [X] T038 [US2] Test edge case: clear localStorage, verify defaults to light mode
+- [X] T039 [US2] Measure theme toggle performance with performance.now() - verify <200ms (per SC-002)
 
 **Checkpoint**: Dark mode system fully functional across all pages
 
@@ -119,18 +119,18 @@ This is a **web application** with separate frontend and backend:
 
 ### Implementation for User Story 1
 
-- [ ] T040 [P] [US1] Create landing page content structure in frontend/src/app/page.tsx (replace existing basic landing with comprehensive content)
-- [ ] T041 [P] [US1] Add hero section with app name "Todo Evolution", tagline "Your personal productivity companion", and value proposition using shadcn/ui Card and typography
-- [ ] T042 [P] [US1] Add features section highlighting 3 key features (Quick Task Creation, Task Organization, Progress Tracking) with icons from lucide-react
-- [ ] T043 [P] [US1] Add CTA buttons section with "Get Started" (primary, links to /auth/signup) and "Sign In" (secondary, links to /auth/signin) using shadcn/ui Button
-- [ ] T044 [US1] Implement authenticated user redirect logic: if isAuthenticated, router.push('/tasks')
-- [ ] T045 [US1] Style landing page layout with Tailwind CSS for responsive design (mobile, tablet, desktop breakpoints)
-- [ ] T046 [US1] Verify landing page works in both light and dark modes
-- [ ] T047 [US1] Test navigation: click "Get Started" → goes to /auth/signup
-- [ ] T048 [US1] Test navigation: click "Sign In" → goes to /auth/signin
-- [ ] T049 [US1] Test redirect: sign in as user, navigate to /, should redirect to /tasks
-- [ ] T050 [US1] Test unauthenticated access: sign out, navigate to /, should show landing page
-- [ ] T051 [US1] Run Lighthouse audit on landing page and verify Accessibility score 90+ and Performance score 85+ (per SC-007)
+- [X] T040 [P] [US1] Create landing page content structure in frontend/src/app/page.tsx (replace existing basic landing with comprehensive content)
+- [X] T041 [P] [US1] Add hero section with app name "Todo Evolution", tagline "Your personal productivity companion", and value proposition using shadcn/ui Card and typography
+- [X] T042 [P] [US1] Add features section highlighting 3 key features (Quick Task Creation, Task Organization, Progress Tracking) with icons from lucide-react
+- [X] T043 [P] [US1] Add CTA buttons section with "Get Started" (primary, links to /auth/signup) and "Sign In" (secondary, links to /auth/signin) using shadcn/ui Button
+- [X] T044 [US1] Implement authenticated user redirect logic: if isAuthenticated, router.push('/tasks')
+- [X] T045 [US1] Style landing page layout with Tailwind CSS for responsive design (mobile, tablet, desktop breakpoints)
+- [X] T046 [US1] Verify landing page works in both light and dark modes
+- [X] T047 [US1] Test navigation: click "Get Started" → goes to /auth/signup
+- [X] T048 [US1] Test navigation: click "Sign In" → goes to /auth/signin
+- [X] T049 [US1] Test redirect: sign in as user, navigate to /, should redirect to /tasks
+- [X] T050 [US1] Test unauthenticated access: sign out, navigate to /, should show landing page
+- [X] T051 [US1] Run Lighthouse audit on landing page and verify Accessibility score 90+ and Performance score 85+ (per SC-007)
 
 **Checkpoint**: Landing page complete and fully functional with dark mode support
 
