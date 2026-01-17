@@ -8,7 +8,7 @@ RESTful API backend for the Todo application built with FastAPI, SQLModel, and P
 - **Task Management**: Full CRUD operations for todo tasks
 - **Data Isolation**: Users can only access their own tasks
 - **High Performance**: Optimized database queries with composite indexes
-- **Production Ready**: Logging, error tracking (Sentry), and health checks
+- **Production Ready**: Comprehensive logging and health checks
 - **Auto-Generated Docs**: Interactive API documentation at `/api/v1/docs`
 
 ## Tech Stack
@@ -119,8 +119,6 @@ backend/
 │   ├── middleware/
 │   │   ├── auth.py             # JWT auth middleware
 │   │   └── logging_middleware.py  # Request/response logging
-│   ├── monitoring/
-│   │   └── error_tracking.py  # Sentry error tracking
 │   └── services/
 │       ├── auth_service.py     # Authentication business logic
 │       ├── task_service.py     # Task business logic
@@ -237,7 +235,6 @@ uv run alembic current
    DEBUG=false
    ENVIRONMENT=production
    ALLOWED_ORIGINS=["https://your-domain.com"]
-   SENTRY_DSN=https://...@sentry.io/...
    ```
 
 ### Deployment Options
@@ -292,19 +289,6 @@ Logs are output to stdout with structured format:
 - `INFO`: General information (default)
 - `WARNING`: Warnings and potential issues
 - `ERROR`: Errors and exceptions
-
-### Error Tracking (Sentry)
-
-Configure Sentry for production error visibility:
-
-```bash
-# Set in .env
-SENTRY_DSN=https://your-dsn@sentry.io/project
-SENTRY_TRACES_SAMPLE_RATE=0.1  # 10% of transactions
-SENTRY_PROFILES_SAMPLE_RATE=0.1
-```
-
-Errors automatically captured and reported to Sentry dashboard.
 
 ### Performance Monitoring
 
