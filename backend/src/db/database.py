@@ -18,6 +18,13 @@ def get_engine():
         # Use test database URL if in test mode
         database_url = os.getenv("TEST_DATABASE_URL") or settings.database_url
 
+        # Convert postgresql:// to postgresql+psycopg:// for psycopg3 compatibility
+        # This ensures we use psycopg3 (installed as psycopg[binary]) instead of psycopg2
+        if database_url.startswith("postgresql://"):
+            database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+        elif database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
+
         # Create engine with connection pooling
         _engine = create_engine(
             database_url,
