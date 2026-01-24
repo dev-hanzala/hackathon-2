@@ -38,7 +38,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       {/* Header with Theme Toggle */}
       <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 py-4 md:py-6 flex justify-between items-center">
           <h2 className="text-xl font-bold text-foreground">Todo Evolution</h2>
           <ThemeToggle />
         </div>
@@ -141,7 +141,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer CTA */}
-      <section className="container mx-auto px-4 py-20 text-center">
+      <section className="container mx-auto px-4 py-20 md:py-28 text-center">
         <h2 className="text-3xl font-bold text-foreground mb-6">
           Ready to boost your productivity?
         </h2>
