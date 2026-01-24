@@ -45,7 +45,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
+      <section className="container mx-auto px-4 pt-28 pb-20 text-center">
         <h1 className="text-5xl font-extrabold text-foreground mb-6 sm:text-6xl lg:text-7xl">
           Todo Evolution
         </h1>
@@ -73,7 +73,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-16 bg-muted/30">
+      <section className="container mx-auto px-4 py-24 bg-muted/30">
         <h2 className="text-3xl font-bold text-center text-foreground mb-12">
           Why Choose Todo Evolution?
         </h2>
