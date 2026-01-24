@@ -1,10 +1,6 @@
 """FastAPI application initialization."""
 
 import logging
-import os
-import subprocess
-import sys
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -110,40 +106,10 @@ Currently no rate limiting. Production deployment should add rate limiting middl
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database and run migrations on startup."""
-    try:
-        # Run Alembic migrations using subprocess to avoid import conflicts
-        logger.info("Running database migrations...")
-
-        # Get the path to backend directory
-        backend_dir = Path(__file__).parent.parent
-        alembic_ini_path = backend_dir / "alembic.ini"
-
-        if alembic_ini_path.exists():
-            # Run alembic upgrade head using subprocess
-            result = subprocess.run(
-                [sys.executable, "-m", "alembic", "upgrade", "head"],
-                cwd=str(backend_dir),
-                capture_output=True,
-                text=True,
-                env={**dict(os.environ), "DATABASE_URL": settings.database_url},
-            )
-
-            if result.returncode == 0:
-                logger.info("✅ Database migrations applied successfully")
-                if result.stdout:
-                    logger.debug(result.stdout)
-            else:
-                logger.error(f"❌ Migration failed: {result.stderr}")
-                logger.info("Falling back to manual table initialization...")
-        else:
-            logger.warning(f"⚠️ alembic.ini not found at {alembic_ini_path}, skipping migrations")
-
-    except Exception as e:
-        logger.error(f"❌ Failed to run migrations: {e}")
-        logger.info("Falling back to manual table initialization...")
-
-    # Fallback: Ensure tables exist (for development/testing)
+    """Initialize database on startup."""
+    # Initialize database tables
+    # Note: Alembic migrations are run manually during deployment or development
+    # This ensures tables exist for the application to function
     try:
         init_db()
         logger.info("✅ Database tables initialized")
