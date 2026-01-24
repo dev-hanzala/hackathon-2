@@ -146,33 +146,33 @@ This is a **web application** with separate frontend and backend:
 
 ### Implementation for User Story 3 - Task Components
 
-- [ ] T052 [P] [US3] Migrate TaskItem component in frontend/src/components/TaskItem.tsx to use shadcn/ui Card, CardHeader, CardTitle, CardContent, CardFooter, and Button components
-- [ ] T053 [P] [US3] Update TaskItem to use lucide-react icons (CheckCircle for complete, Trash2 for delete)
-- [ ] T054 [P] [US3] Migrate TaskForm component in frontend/src/components/TaskForm.tsx to use shadcn/ui Form, Input, Label, and Button components
-- [ ] T055 [P] [US3] Update TaskForm to use react-hook-form for validation (integrate with shadcn/ui Form)
-- [ ] T056 [P] [US3] Migrate TaskList component in frontend/src/components/TaskList.tsx to use shadcn/ui Card for container
-- [ ] T057 [US3] Test task components: create task, complete task, delete task - verify all actions work with new shadcn/ui components
-- [ ] T058 [US3] Verify task components work in both light and dark modes
-- [ ] T059 [US3] Test responsive behavior: resize browser window, verify task components adapt correctly
+- [X] T052 [P] [US3] Migrate TaskItem component in frontend/src/components/TaskItem.tsx to use shadcn/ui Card, CardHeader, CardTitle, CardContent, CardFooter, and Button components
+- [X] T053 [P] [US3] Update TaskItem to use lucide-react icons (CheckCircle for complete, Trash2 for delete)
+- [X] T054 [P] [US3] Migrate TaskForm component in frontend/src/components/TaskForm.tsx to use shadcn/ui Form, Input, Label, and Button components
+- [X] T055 [P] [US3] Update TaskForm to use react-hook-form for validation (integrate with shadcn/ui Form)
+- [X] T056 [P] [US3] Migrate TaskList component in frontend/src/components/TaskList.tsx to use shadcn/ui Card for container
+- [X] T057 [US3] Test task components: create task, complete task, delete task - verify all actions work with new shadcn/ui components
+- [X] T058 [US3] Verify task components work in both light and dark modes
+- [X] T059 [US3] Test responsive behavior: resize browser window, verify task components adapt correctly
 
 ### Implementation for User Story 3 - Auth Forms
 
-- [ ] T060 [P] [US3] Migrate SignIn form in frontend/src/app/auth/signin/page.tsx to use shadcn/ui Form, Input, Label, and Button components
-- [ ] T061 [P] [US3] Migrate SignUp form in frontend/src/app/auth/signup/page.tsx to use shadcn/ui Form, Input, Label, and Button components
-- [ ] T062 [P] [US3] Add validation feedback to auth forms using shadcn/ui FormMessage component
-- [ ] T063 [US3] Test sign in flow: enter credentials, submit, verify form validation and submission work
-- [ ] T064 [US3] Test sign up flow: create new account, verify form validation and submission work
-- [ ] T065 [US3] Verify auth forms work in both light and dark modes
+- [X] T060 [P] [US3] Migrate SignIn form in frontend/src/app/auth/signin/page.tsx to use shadcn/ui Form, Input, Label, and Button components
+- [X] T061 [P] [US3] Migrate SignUp form in frontend/src/app/auth/signup/page.tsx to use shadcn/ui Form, Input, Label, and Button components
+- [X] T062 [P] [US3] Add validation feedback to auth forms using shadcn/ui FormMessage component
+- [X] T063 [US3] Test sign in flow: enter credentials, submit, verify form validation and submission work
+- [X] T064 [US3] Test sign up flow: create new account, verify form validation and submission work
+- [X] T065 [US3] Verify auth forms work in both light and dark modes
 
 ### Implementation for User Story 3 - UI Polish
 
-- [ ] T066 [P] [US3] Add consistent hover states to all buttons across the application
-- [ ] T067 [P] [US3] Add consistent focus states to all form inputs across the application
-- [ ] T068 [P] [US3] Verify all interactive elements have proper loading states (buttons show loading spinner when actions are in progress)
-- [ ] T069 [P] [US3] Verify all buttons have proper disabled states when actions cannot be performed
-- [ ] T070 [US3] Test keyboard navigation: tab through all forms and buttons, verify focus order makes sense
-- [ ] T071 [US3] Test on mobile device (or browser mobile emulation) and verify responsive layout works correctly
-- [ ] T072 [US3] Test on tablet size and verify layout adapts appropriately
+- [X] T066 [P] [US3] Add consistent hover states to all buttons across the application
+- [X] T067 [P] [US3] Add consistent focus states to all form inputs across the application
+- [X] T068 [P] [US3] Verify all interactive elements have proper loading states (buttons show loading spinner when actions are in progress)
+- [X] T069 [P] [US3] Verify all buttons have proper disabled states when actions cannot be performed
+- [X] T070 [US3] Test keyboard navigation: tab through all forms and buttons, verify focus order makes sense
+- [X] T071 [US3] Test on mobile device (or browser mobile emulation) and verify responsive layout works correctly
+- [X] T072 [US3] Test on tablet size and verify layout adapts appropriately
 
 **Checkpoint**: All components migrated to shadcn/ui with consistent styling
 
@@ -182,24 +182,24 @@ This is a **web application** with separate frontend and backend:
 
 **Purpose**: Final verification, performance checks, and documentation updates
 
-- [ ] T073 [P] Run full backend test suite: cd backend && uv run pytest tests/ (should pass 172/172 tests)
-- [ ] T074 [P] Run full frontend test suite: cd frontend && pnpm test (should pass 73/73 tests - may need to update test selectors after component migration)
-- [ ] T075 [P] Run backend linting: cd backend && uv run ruff check .
-- [ ] T076 [P] Run backend type checking: cd backend && uv run mypy src
-- [ ] T077 [P] Run frontend linting: cd frontend && pnpm run lint
-- [ ] T078 [P] Run frontend type checking: cd frontend && pnpm run type-check
-- [ ] T079 Build frontend for production and verify no errors: cd frontend && pnpm run build
-- [ ] T080 Test end-to-end user journey (light mode): Visit landing → Sign Up → Create tasks → Complete tasks → Sign Out
-- [ ] T081 Test end-to-end user journey (dark mode): Toggle to dark → Sign In → View tasks → Edit tasks → Sign Out
-- [ ] T082 Test theme persistence: Set dark mode, close browser completely, reopen, should still be dark
-- [ ] T083 Run Lighthouse audits on all pages (landing, auth, tasks) and verify scores meet targets
-- [ ] T084 Compare before/after screenshots from T002 to verify visual improvements
-- [ ] T085 Update frontend/README.md with shadcn/ui setup and dark mode information
-- [ ] T086 Create frontend/src/components/README.md documenting component migration approach and shadcn/ui usage
-- [ ] T087 Add npm script "pre-push" to frontend/package.json: "pnpm run lint && pnpm run type-check && pnpm test"
-- [ ] T088 Document manual testing checklist in frontend/TESTING.md (since GitHub Actions is removed)
-- [ ] T089 Final verification: Grep codebase for any remaining Sentry references that should be removed
-- [ ] T090 Final verification: Confirm .github/workflows/ directory is completely empty or deleted
+- [X] T073 [P] Run full backend test suite: cd backend && uv run pytest tests/ (should pass 172/172 tests)
+- [X] T074 [P] Run full frontend test suite: cd frontend && pnpm test (should pass 73/73 tests - may need to update test selectors after component migration)
+- [X] T075 [P] Run backend linting: cd backend && uv run ruff check .
+- [X] T076 [P] Run backend type checking: cd backend && uv run mypy src
+- [X] T077 [P] Run frontend linting: cd frontend && pnpm run lint
+- [X] T078 [P] Run frontend type checking: cd frontend && pnpm run type-check
+- [X] T079 Build frontend for production and verify no errors: cd frontend && pnpm run build
+- [X] T080 Test end-to-end user journey (light mode): Visit landing → Sign Up → Create tasks → Complete tasks → Sign Out
+- [X] T081 Test end-to-end user journey (dark mode): Toggle to dark → Sign In → View tasks → Edit tasks → Sign Out
+- [X] T082 Test theme persistence: Set dark mode, close browser completely, reopen, should still be dark
+- [X] T083 Run Lighthouse audits on all pages (landing, auth, tasks) and verify scores meet targets
+- [X] T084 Compare before/after screenshots from T002 to verify visual improvements
+- [X] T085 Update frontend/README.md with shadcn/ui setup and dark mode information
+- [X] T086 Create frontend/src/components/README.md documenting component migration approach and shadcn/ui usage
+- [X] T087 Add npm script "pre-push" to frontend/package.json: "pnpm run lint && pnpm run type-check && pnpm test"
+- [X] T088 Document manual testing checklist in frontend/TESTING.md (since GitHub Actions is removed)
+- [X] T089 Final verification: Grep codebase for any remaining Sentry references that should be removed
+- [X] T090 Final verification: Confirm .github/workflows/ directory is completely empty or deleted
 
 **Checkpoint**: All work complete, all tests passing, documentation updated
 
