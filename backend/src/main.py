@@ -14,20 +14,10 @@ from src.api.v1 import router as v1_router
 from src.config import settings
 from src.db.database import init_db
 from src.middleware.logging_middleware import LoggingMiddleware, setup_logging
-from src.monitoring import setup_error_tracking
 
 # Setup logging first
 setup_logging(log_level="DEBUG" if settings.debug else "INFO")
 logger = logging.getLogger(__name__)
-
-# Setup error tracking (T152)
-setup_error_tracking(
-    dsn=settings.sentry_dsn,
-    environment=settings.environment,
-    traces_sample_rate=settings.sentry_traces_sample_rate,
-    profiles_sample_rate=settings.sentry_profiles_sample_rate,
-    debug=settings.debug,
-)
 
 # Create FastAPI app
 app = FastAPI(
@@ -42,7 +32,7 @@ A RESTful API for managing todo tasks with user authentication.
 - **Task Management**: Create, read, update, delete, and complete tasks
 - **Data Isolation**: Users can only access their own tasks
 - **Performance**: Optimized queries with composite indexes (<2s for 100+ tasks)
-- **Monitoring**: Comprehensive logging and optional Sentry error tracking
+- **Monitoring**: Comprehensive logging for request tracking and debugging
 
 ### Authentication
 All task endpoints require authentication via JWT Bearer token.
