@@ -2,10 +2,12 @@
 
 /**
  * TaskEditForm component - inline form for editing task titles.
- * User Story 5: Update Task
+ * Migrated to shadcn/ui components for consistent styling.
  */
 
 import { useState, FormEvent } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface TaskEditFormProps {
   taskId: string;
@@ -49,44 +51,37 @@ export function TaskEditForm({
     <form onSubmit={handleSubmit} className="flex-1">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
-          <input
+          <Input
             type="text"
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
               if (error) setError('');
             }}
-            className={`flex-1 px-3 py-2 text-sm border rounded focus:outline-none focus:ring-2 transition-colors ${
-              error
-                ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-            }`}
+            className={`flex-1 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
             disabled={isSubmitting}
             maxLength={500}
             autoFocus
           />
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !title.trim() || title.trim() === currentTitle.trim()}
-            className={`px-4 py-2 text-sm font-medium text-white rounded transition-colors ${
-              isSubmitting || !title.trim() || title.trim() === currentTitle.trim()
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+            size="sm"
           >
             {isSubmitting ? 'Saving...' : 'Save'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors disabled:opacity-50"
+            variant="outline"
+            size="sm"
           >
             Cancel
-          </button>
+          </Button>
         </div>
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        <p className="text-xs text-gray-500">{title.length}/500 characters</p>
+        {error && <p className="text-xs text-destructive">{error}</p>}
+        <p className="text-xs text-muted-foreground">{title.length}/500 characters</p>
       </div>
     </form>
   );
