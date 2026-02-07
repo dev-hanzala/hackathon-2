@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     api_version: str = "v1"
 
     # Gemini API Configuration (accessed via OpenAI SDK)
-    gemini_api_key: str = ""
+    gemini_api_key: str = "AIzaSyBYmTJuQe2BwzjapLUGebF6sXMbtTVzfpE"
     gemini_model: str = "gemini-2.0-flash"
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
