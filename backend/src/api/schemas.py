@@ -100,3 +100,27 @@ class ErrorResponse(BaseModel):
 
     detail: str
     code: str | None = None
+
+
+# Chat Schemas
+class ChatMessage(BaseModel):
+    """A single chat message."""
+
+    role: str = Field(description="Message role: 'user', 'assistant', or 'system'")
+    content: str = Field(min_length=1, description="Message content")
+
+
+class ChatRequest(BaseModel):
+    """Schema for chat completion request."""
+
+    messages: list[ChatMessage] = Field(min_length=1, description="Conversation messages")
+    model: str | None = Field(default=None, description="Model override (defaults to server config)")
+    temperature: float = Field(default=0.7, ge=0.0, le=2.0, description="Sampling temperature")
+    max_tokens: int | None = Field(default=None, gt=0, description="Max tokens in response")
+
+
+class ChatResponse(BaseModel):
+    """Schema for chat completion response."""
+
+    response: str = Field(description="The assistant's response text")
+    model: str = Field(description="Model used for the response")

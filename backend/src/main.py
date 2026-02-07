@@ -100,6 +100,10 @@ Currently no rate limiting. Production deployment should add rate limiting middl
             "name": "tasks",
             "description": "Task management operations (CRUD operations)",
         },
+        {
+            "name": "chat",
+            "description": "Chat with Gemini AI via OpenAI SDK",
+        },
     ],
 )
 
